@@ -4,9 +4,33 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
-jobs: 
+jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
       - name: Exemplo
         run: echo "Hello World !!!"
+
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - # Setting up Docker Buildx with docker-container driver is required
+        # at the moment to be able to use a subdirectory with Git context
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: "./src"
+          push: true
+          file: "./src/Dockerfile"
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/conversao-temperatura-fc:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/conversao-temperatura-fc:${{ github.run_number }}
