@@ -32,11 +32,10 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/conversao-temperatura-fc:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/conversao-temperatura-fc:${{ github.run_number }}
-    
+
   cd:
     name: CD
     runs-on: ubuntu-latest
-    needs: [ci]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.7
@@ -48,5 +47,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-              whoami
-              ls -al
+            whoami
+            ls -al
